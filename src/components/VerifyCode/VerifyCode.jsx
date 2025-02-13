@@ -19,7 +19,7 @@ export default function VerifyCode() {
         if (res.data.status === "Success") {
           toast.success(res.data.status);
           setIsLoading(false);
-          navigate("/");
+          navigate("/resetpassword");
         } else {
           toast.error(res.data.message);
           setIsLoading(false);

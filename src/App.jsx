@@ -23,6 +23,8 @@ import CategoryDetails from "./components/CategoryDetails/CategoryDetails";
 import BrandDetails from "./components/BrandDetails/BrandDetails";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import VerifyCode from "./components/VerifyCode/VerifyCode";
+import ResetPassword from "./components/ResetPassword/ResetPassword";
+import WishListProducts from "./components/WishListProducts/WishListProducts";
 // Create a client
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -60,6 +62,14 @@ const router = createBrowserRouter([
           <ProtectedRoute>
             <Brands />
           </ProtectedRoute>
+        ),
+      },
+      {
+        path: "wishlist",
+        element: (
+          <WishListProducts>
+            <Brands />
+          </WishListProducts>
         ),
       },
       {
@@ -114,6 +124,7 @@ const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "forgotPasswords", element: <ForgotPassword /> },
       { path: "verifycode", element: <VerifyCode /> },
+      { path: "resetpassword", element: <ResetPassword /> },
       { path: "*", element: <NotFound /> },
     ],
   },

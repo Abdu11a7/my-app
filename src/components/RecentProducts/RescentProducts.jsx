@@ -4,12 +4,14 @@ import useAPI from "../../Hooks/useAPI";
 import { useContext, useState } from "react";
 import { CartContext } from "../../Context/CartContext";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function RescentProducts() {
   const { addProductsToCart, getUserCart, numOfCartItems, setNumOfCartItems } =
     useContext(CartContext);
   const [isAdded, setIsAdded] = useState(false);
   const [productID, setProductID] = useState(null);
+  const [wishedItems, setWishedItems] = useState({});
 
   const { data, isError, isLoading, error } = useAPI(
     `https://ecommerce.routemisr.com/api/v1/products`,
@@ -40,6 +42,29 @@ export default function RescentProducts() {
     setIsAdded(false);
   }
 
+  function handelAddToWishList(id) {
+    axios
+      .post(
+        "https://ecommerce.routemisr.com/api/v1/wishlist",
+        { productId: id },
+        {
+          headers: {
+            token: localStorage.getItem("userToken"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        if (res.data.status === "success") {
+          setWishedItems((prev) => ({ ...prev, [id]: true }));
+          toast.success(res.data.message);
+          console.log(res.data.data);
+        }
+      })
+      .catch((err) => console.log(err));
+    setWishedItems(false);
+  }
+
   return (
     <>
       {isLoading ? (
@@ -64,6 +89,8 @@ export default function RescentProducts() {
                 product={product}
                 isAdded={isAdded}
                 productID={productID}
+                onAddToWishList={handelAddToWishList}
+                isWished={wishedItems}
                 key={product?._id}
               />
             ))}
@@ -74,10 +101,22 @@ export default function RescentProducts() {
   );
 }
 
-function Product({ product, onAddToCart, isAdded, productID }) {
+function Product({
+  product,
+  onAddToCart,
+  isAdded,
+  productID,
+  onAddToWishList,
+  isWished,
+}) {
   return (
     <div className="product w-full text-center sm:text-left sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5  p-2">
-      <article className="border border-solid border-[#cccccc6b] hover:border-[#0aad0a] hover:shadow-lg rounded-md p-4 sm:p-3 md:p-4 lg:p-5 transition-all">
+      <article className="border relative border-solid border-[#cccccc6b] hover:border-[#0aad0a] hover:shadow-lg rounded-md p-4 sm:p-3 md:p-4 lg:p-5 transition-all">
+        <i
+          className={`fa-heart fa-2x cursor-pointer absolute top-0 right-0 ${
+            isWished[product.id] ? "fas text-[#0aad0a]" : "far text-gray-400"
+          }`}
+          onClick={() => onAddToWishList(product?.id)}></i>
         <Link to={`productdetails/${product?.id}/${product?.category?.name}`}>
           <figure>
             <img

@@ -92,6 +92,14 @@ export default function Navbar() {
               </li>
               <li>
                 <NavLink
+                  onClick={() => handleTitle("Wish List")}
+                  className="text-lg text-[#707071] hover:text-[#0aad0a]"
+                  to="wishlist">
+                  Wish List
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
                   onClick={() => handleTitle("Cart")}
                   className="text-lg text-[#707071] hover:text-[#0aad0a]"
                   to="cart">

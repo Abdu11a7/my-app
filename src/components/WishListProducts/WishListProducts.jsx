@@ -1,22 +1,18 @@
 /* eslint-disable react/prop-types */
-
-import { Link } from "react-router-dom";
-import useAPI from "../../Hooks/useAPI";
-import toast from "react-hot-toast";
-import { useContext, useState } from "react";
-import { CartContext } from "../../Context/CartContext";
 import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { CartContext } from "../../Context/CartContext";
+import toast from "react-hot-toast";
 
-export default function Products() {
+export default function WishListProducts() {
+  const [products, setProducts] = useState([]);
+
+  const [productID, setProductID] = useState(null);
+  const [isAdded, setIsAdded] = useState(false);
   const { addProductsToCart, getUserCart, numOfCartItems, setNumOfCartItems } =
     useContext(CartContext);
-  const [isAdded, setIsAdded] = useState(false);
-  const [wishedItems, setWishedItems] = useState({});
-  const [productID, setProductID] = useState(null);
-  const { data, isError, isLoading, error } = useAPI(
-    `https://ecommerce.routemisr.com/api/v1/products`,
-    "categoryProduct"
-  );
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handelAddTocart(id) {
     setIsAdded(true);
@@ -42,55 +38,49 @@ export default function Products() {
     setIsAdded(false);
   }
 
-  function handelAddToWishList(id) {
+  function productDetails() {
+    setIsLoading(true);
     axios
-      .post(
-        "https://ecommerce.routemisr.com/api/v1/wishlist",
-        { productId: id },
-        {
-          headers: {
-            token: localStorage.getItem("userToken"),
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-        if (res.data.status === "success") {
-          setWishedItems((prev) => ({ ...prev, [id]: true }));
-          toast.success(res.data.message);
-          console.log(res.data.data);
-        }
+      .get(`https://ecommerce.routemisr.com/api/v1/wishlist`, {
+        headers: {
+          token: localStorage.getItem("userToken"),
+        },
       })
-      .catch((err) => console.log(err));
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.status === "success") {
+          setProducts(res.data.data);
+        }
+        setIsLoading(false);
+      })
+      .catch((res) => console.log(res));
   }
+
+  useEffect(() => {
+    productDetails();
+  }, []);
 
   return (
     <>
+      {" "}
       {isLoading ? (
         <div className="spinner"></div>
-      ) : isError ? (
-        <Error>
-          <h2 className="text-3xl text-center text-[#0aad0a] font-semibold">
-            {error?.message}
-          </h2>
-        </Error>
       ) : (
         <main>
           <header>
             <h1 className="text-[#0aad0a] leading-relaxed mt-5 uppercase text-center text-3xl tracking-widest">
-              Our <br /> Products.
+              Your <br /> Wish List.
             </h1>
           </header>
           <section className="row">
-            {data?.data?.data?.map((product) => (
+            {products.map((product) => (
               <Product
                 product={product}
-                key={product.id}
                 onAddToCart={handelAddTocart}
-                onAddToWishList={handelAddToWishList}
+                isLoading={isLoading}
                 isAdded={isAdded}
-                isWished={wishedItems}
                 productID={productID}
+                key={product.id}
               />
             ))}
           </section>
@@ -100,22 +90,10 @@ export default function Products() {
   );
 }
 
-function Product({
-  product,
-  onAddToCart,
-  isAdded,
-  productID,
-  onAddToWishList,
-  isWished,
-}) {
+function Product({ product, isAdded, onAddToCart, productID }) {
   return (
     <div className="product w-full text-center sm:text-left sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2 ">
       <article className="border border-solid relative border-[#cccccc6b] hover:border-[#0aad0a] hover:shadow-lg rounded-md p-2 sm:p-3 md:p-4 lg:p-5 transition-all">
-        <i
-          className={`fa-heart fa-2x cursor-pointer absolute top-0 right-0 ${
-            isWished[product.id] ? "fas text-[#0aad0a]" : "far text-gray-400"
-          }`}
-          onClick={() => onAddToWishList(product?.id)}></i>
         <Link to={`/productdetails/${product?.id}/${product?.category?.name}`}>
           <figure>
             <img
@@ -154,8 +132,4 @@ function Product({
       </article>
     </div>
   );
-}
-
-function Error({ children }) {
-  return <header>{children}</header>;
 }
