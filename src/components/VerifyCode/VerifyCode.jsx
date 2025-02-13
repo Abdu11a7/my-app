@@ -16,22 +16,17 @@ export default function VerifyCode() {
         resetCode: formik.values.code,
       })
       .then((res) => {
-        if (res.data.statusMsg === "success") {
-          toast.success(res.data.message);
+        if (res.data.status === "Success") {
+          toast.success(res.data.status);
           setIsLoading(false);
           navigate("/");
         } else {
           toast.error(res.data.message);
           setIsLoading(false);
         }
-
-        console.log(res.response.data);
       })
       .catch((err) => {
-        // toast.error(res.data.message);
-
-        console.log(err.response.data.message);
-        toast.error(err.response.data.message);
+        toast.error(err?.response.data.message);
         setIsLoading(false);
       });
   }
@@ -46,6 +41,7 @@ export default function VerifyCode() {
 
   return (
     <form action="" onSubmit={formik.handleSubmit}>
+      <h2 className="text-3xl my-7">Code Is Valid For 10 Minutes</h2>
       <div className="relative z-0 w-full mb-5 group">
         <input
           type="tel"

@@ -31,7 +31,7 @@ export default function CartContextProvider({ children }) {
       .then((res) => {
         setCartUserId(res.data.data._id);
         localStorage.setItem("ownerId", res.data.data.cartOwner);
-        console.log(res);
+        console.log(res.data.data.cartOwner);
         setNumOfCartItems(res.data.numOfCartItems);
         return res;
       })
