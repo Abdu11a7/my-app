@@ -20,7 +20,6 @@ export default function CartContextProvider({ children }) {
         { headers }
       )
       .then((res) => {
-        localStorage.setItem("ownerId", res.data.data.cartOwner);
         return res;
       })
       .catch((err) => err);
@@ -31,6 +30,8 @@ export default function CartContextProvider({ children }) {
       .get("https://ecommerce.routemisr.com/api/v1/cart", { headers })
       .then((res) => {
         setCartUserId(res.data.data._id);
+        localStorage.setItem("ownerId", res.data.data.cartOwner);
+        console.log(res);
         setNumOfCartItems(res.data.numOfCartItems);
         return res;
       })

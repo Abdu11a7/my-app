@@ -21,6 +21,8 @@ export default function Register() {
         if (res.data.message == "success") {
           setApiError("");
           localStorage.setItem("userToken", res.data.token);
+          console.log(res);
+
           setUserLogin(res.data.token);
           navigate("/");
         }
