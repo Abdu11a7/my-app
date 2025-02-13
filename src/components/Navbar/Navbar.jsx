@@ -3,16 +3,20 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../../assets/freshcart-logo.svg";
 import { UserContext } from "../../Context/UserContext";
 import { CartContext } from "../../Context/CartContext";
+import { Menu, X } from "lucide-react";
 
-export default function Navbar() {
-  const { userLogin, setUserLogin } = useContext(UserContext);
-  const { numOfCartItems } = useContext(CartContext);
+export default function TestNav() {
   const [isOpen, setIsOpen] = useState(false);
-
+  const toggleNav = () => {
+    setIsOpen(!isOpen);
+  };
   const navigate = useNavigate();
   function handleTitle(link) {
     document.title = link;
   }
+  const { userLogin, setUserLogin } = useContext(UserContext);
+  const { numOfCartItems } = useContext(CartContext);
+
   function handleSignout() {
     setUserLogin(null);
     localStorage.removeItem("userToken");
@@ -21,35 +25,131 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="z-50 bg-[#f8f9fa] fixed top-0 left-0 right-0 border-gray-200">
-      <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4 gap-2">
-        <div className="flex justify-between items-center w-full md:w-auto">
-          <Link to="" className="flex items-center space-x-3">
-            <img src={logo} className="h-8" alt="Freshcart Logo" />
-          </Link>
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16m-7 6h7"
-              />
-            </svg>
-          </button>
+    <header className="sticky bg-[#f8f9fa] top-0 z-[20] mx-auto flex-wrap w-full flex items-center justify-between p-8">
+      <Link to="" className="w-1/4">
+        <img src={logo} className="h-8" alt="Freshcart Logo" />
+      </Link>
+
+      <nav className="flex w-3/4 justify-end">
+        {userLogin && (
+          <ul className="hidden lg:flex w-full justify-between items-center">
+            <li>
+              <NavLink
+                onClick={() => handleTitle("Home")}
+                className="text-lg text-[#707071] hover:text-[#0aad0a]"
+                to="">
+                Home
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                onClick={() => handleTitle("Cart")}
+                className="text-lg text-[#707071] hover:text-[#0aad0a]"
+                to="cart">
+                Cart
+                <i className="fas fa-cart-shopping ml-1 relative">
+                  <span className="absolute text-xs text-[#0aad0a] -top-[60%] -right-1/3">
+                    {numOfCartItems}
+                  </span>
+                </i>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                onClick={() => handleTitle("Products")}
+                className="text-lg text-[#707071] hover:text-[#0aad0a]"
+                to="products">
+                Products
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                onClick={() => handleTitle("Categories")}
+                className="text-lg text-[#707071] hover:text-[#0aad0a]"
+                to="categories">
+                Categories
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                onClick={() => handleTitle("Brands")}
+                className="text-lg text-[#707071] hover:text-[#0aad0a]"
+                to="brands">
+                Brands
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                onClick={() => handleTitle("Wish List")}
+                className="text-lg text-[#707071] hover:text-[#0aad0a]"
+                to="wishlist">
+                Wish List
+              </NavLink>
+            </li>
+          </ul>
+        )}
+        <div className="hidden lg:flex w-3/4 justify-evenly items-center">
+          <ul className="flex gap-3 items-center">
+            <li>
+              <i className="fab cursor-pointer hover:text-[#0aad0a] fa-lg fa-instagram"></i>
+            </li>
+            <li>
+              <i className="fab cursor-pointer hover:text-[#0aad0a] fa-lg fa-facebook"></i>
+            </li>
+            <li>
+              <i className="fab cursor-pointer hover:text-[#0aad0a] fa-lg fa-tiktok"></i>
+            </li>
+            <li>
+              <i className="fab cursor-pointer hover:text-[#0aad0a] fa-lg fa-twitter"></i>
+            </li>
+            <li>
+              <i className="fab cursor-pointer hover:text-[#0aad0a] fa-lg fa-linkedin"></i>
+            </li>
+            <li>
+              <i className="fab cursor-pointer hover:text-[#0aad0a] fa-lg fa-youtube"></i>
+            </li>
+          </ul>
+          <ul className="flex gap-2">
+            {userLogin !== null ? (
+              <li>
+                <Link
+                  to="/login"
+                  onClick={handleSignout}
+                  className="text-white bg-[#0aad0a] hover:bg-[#099409] focus:ring-4 focus:outline-none focus:ring-[#09ed092b] font-medium rounded-lg text-lg  inline-block my-2 sm:my-0  sm:w-auto px-3 py-1.5 text-center">
+                  Logout
+                </Link>
+              </li>
+            ) : (
+              <>
+                <li>
+                  <Link
+                    onClick={() => handleTitle("Login")}
+                    className="text-white bg-[#0aad0a] hover:bg-[#099409] focus:ring-4 focus:outline-none focus:ring-[#09ed092b] font-medium rounded-lg text-lg inline-block my-2 sm:my-0  sm:w-auto px-3 py-1.5 text-center"
+                    to="login">
+                    Login
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    onClick={() => handleTitle("Register")}
+                    className="text-white bg-[#0aad0a] hover:bg-[#099409] focus:ring-4 focus:outline-none focus:ring-[#09ed092b] font-medium rounded-lg text-lg inline-block my-2 sm:my-0 sm:w-auto px-3 py-1.5 text-center"
+                    to="register">
+                    Register
+                  </Link>
+                </li>
+              </>
+            )}
+          </ul>
         </div>
-        <div
-          className={`md:flex ${
-            isOpen ? "block" : "hidden"
-          } w-full gap-3 md:w-auto`}>
+        <div className="lg:hidden">
+          <button onClick={toggleNav}>{isOpen ? <X /> : <Menu />}</button>
+        </div>
+      </nav>
+
+      {isOpen && (
+        <>
           {userLogin && (
-            <ul className="flex flex-col md:flex-row items-center gap-3">
+            <ul className="flex gap-2 lg:hidden flex-col basis-full items-center">
               <li>
                 <NavLink
                   onClick={() => handleTitle("Home")}
@@ -64,6 +164,11 @@ export default function Navbar() {
                   className="text-lg text-[#707071] hover:text-[#0aad0a]"
                   to="cart">
                   Cart
+                  <i className="fas fa-cart-shopping ml-1 relative">
+                    <span className="absolute text-xs text-[#0aad0a] -top-[60%] -right-1/3">
+                      {numOfCartItems}
+                    </span>
+                  </i>
                 </NavLink>
               </li>
               <li>
@@ -98,22 +203,11 @@ export default function Navbar() {
                   Wish List
                 </NavLink>
               </li>
-              <li>
-                <NavLink
-                  onClick={() => handleTitle("Cart")}
-                  className="text-lg text-[#707071] hover:text-[#0aad0a]"
-                  to="cart">
-                  <i className="fas fa-cart-shopping relative">
-                    <span className="absolute text-xs text-[#0aad0a] -top-[60%] -right-1/3">
-                      {numOfCartItems}
-                    </span>
-                  </i>
-                </NavLink>
-              </li>
             </ul>
           )}
-          <div className="flex flex-col md:flex-row items-center space-x-6 md:space-x-6 mt-4 md:mt-0">
-            <ul className="flex gap-2 items-center">
+
+          <div className="flex lg:hidden flex-col basis-full items-center">
+            <ul className="flex py-3 lg:py-0 gap-5 items-center">
               <li>
                 <i className="fab cursor-pointer hover:text-[#0aad0a] fa-lg fa-instagram"></i>
               </li>
@@ -139,7 +233,7 @@ export default function Navbar() {
                   <Link
                     to="/login"
                     onClick={handleSignout}
-                    className="text-white bg-[#0aad0a] hover:bg-[#099409] focus:ring-4 focus:outline-none focus:ring-[#09ed092b] font-medium rounded-lg text-lg  inline-block my-2 sm:my-0  sm:w-auto px-3 py-1.5 text-center">
+                    className="text-white bg-[#0aad0a] hover:bg-[#099409] focus:ring-4 focus:outline-none focus:ring-[#09ed092b] font-medium rounded-lg text-lg inline-block my-2 sm:my-0  sm:w-auto px-3 py-1.5 text-center">
                     Logout
                   </Link>
                 </li>
@@ -165,8 +259,8 @@ export default function Navbar() {
               )}
             </ul>
           </div>
-        </div>
-      </div>
-    </nav>
+        </>
+      )}
+    </header>
   );
 }

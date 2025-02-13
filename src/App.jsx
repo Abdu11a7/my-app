@@ -25,7 +25,7 @@ import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import VerifyCode from "./components/VerifyCode/VerifyCode";
 import ResetPassword from "./components/ResetPassword/ResetPassword";
 import WishListProducts from "./components/WishListProducts/WishListProducts";
-// Create a client
+
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
